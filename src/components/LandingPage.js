@@ -3,14 +3,14 @@ import React from 'react'
 function LandingPage() {
     return (
         <>
-        <section>
+        <section id="about">
     <div className = "log-in">
         
         <a href="">--Sign Up/Login--</a>
      </div>
 
         <div id="companyInfo">
-        <h1 >About Our Store</h1>
+        <h1 >About Us</h1>
         </div>
         <div className ="aboutContainer">
         <div className ="truckImage">
