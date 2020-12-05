@@ -1,51 +1,76 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import { addCart } from '../actions/index'
+import axios from '../data/axios'
 
 function Item(props) {
+    const [item, setItem] = useState({})
+    const { id } = useParams()
     let history = useHistory()
-    const {id} = useParams()
-    const item = props.items.find(item=>item.id === Number(id))
+
+    useEffect(() => {
+        axios.get(`/api/items/${id}`)
+            .then(res => {
+                setItem(res.data)
+
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    }, [])
+
+    // const item = props.items.find(item => item.id === Number(id))
+
 
     const clickHandler = (e, item) => {
         e.preventDefault()
         props.addCart(item)
     }
-    
-    
+
+
     const goBackHandler = (e) => {
         e.preventDefault()
         history.push('/items')
     }
     return (
         <div className="item-details">
-                <div>
+            <div className="item-details-left">
+                <div className="item-details-left-name">
                     {item.name}
                 </div>
                 <div>
-                    ${item.price.toFixed(2)}
+                    ${item.price}
                 </div>
                 <div>
-                    <img src = {item.imageUrl} />
+                    <img src={item.imageUrl} />
                 </div>
+                <div className="item-buttons">
+
+                    <div className="item-button" onClick={(e) => { clickHandler(e, item) }}>Add to Cart</div>
+                    <div className="item-button" onClick={goBackHandler}>Back to Shopping</div>
+                </div>
+
+            </div>
+            <div className="item-details-right">
                 <div>
                     {item.description}
                 </div>
-                <div>
+                <div className="item-details-shipping">
                     {item.shipping}
                 </div>
-                <button onClick={(e)=> {clickHandler(e,item)}}>Add to Cart</button>
-                <button onClick={goBackHandler}>Back to Shopping</button>
+            </div>
+
 
         </div>
     )
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
     return {
-        items : state.items
+        items: state.items
     }
 }
 
-export default connect(mapStateToProps, {addCart})(Item)
+export default connect(mapStateToProps, { addCart })(Item)
